@@ -5,7 +5,7 @@ description: Cronicle Widget Configuration
 
 Learn more about [Cronicle](https://github.com/jhuckaby/Cronicle).
 
-The Cronicle backup retrieves the total number of success, the number failed events, the last success event date and the last failed event date.
+The Cronicle retrieves the total number of success, the number failed events, the last success event date and the last failed event date.
 
 Find your API key under `Admin > API Keys tab > Add API Key... > Create Key`.
 
