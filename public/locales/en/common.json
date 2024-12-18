@@ -1007,5 +1007,11 @@
         "issues": "Issues",
         "merges": "Merge Requests",
         "projects": "Projects"
+    },
+    "cronicle": {
+      "success": "Success",
+      "failed": "Failed",
+      "lastSuccess": "Last success",
+      "lastFailed": "Last Failed"
     }
 }

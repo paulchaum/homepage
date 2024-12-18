@@ -405,6 +405,9 @@ export function cleanServiceGroups(groups) {
           // diskstation
           volume,
 
+          // cronicle
+          eventsIds,
+
           // docker
           container,
           server,
@@ -545,6 +548,10 @@ export function cleanServiceGroups(groups) {
           if (symbols) widget.symbols = symbols;
           if (slugs) widget.slugs = slugs;
           if (defaultinterval) widget.defaultinterval = defaultinterval;
+        }
+
+        if (type === "cronicle") {
+          if (eventsIds) widget.eventsIds = eventsIds;
         }
 
         if (type === "docker") {
