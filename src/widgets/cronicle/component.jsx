@@ -24,7 +24,7 @@ export default function Component({ service }) {
       // Count success
       setNbSuccess(data.rows.reduce((acc, cur) => {
         // Filter on eventsIds
-        if (eventsIds && eventsIds.includes(cur.event) && cur.has_error === 0)
+        if ((!eventsIds || eventsIds.includes(cur.event)) && cur.has_error === 0)
           return acc + 1;
         return acc;
       }, 0));
@@ -32,17 +32,17 @@ export default function Component({ service }) {
       // Count failed
       setNbFailed(data.rows.reduce((acc, cur) => {
         // Filter on eventsIds
-        if (eventsIds && eventsIds.includes(cur.event) && cur.has_error > 0)
+        if ((!eventsIds || eventsIds.includes(cur.event)) && cur.has_error > 0)
           return acc + 1;
         return acc;
       }, 0));
 
       // Get last success date
-      const lastSuccess = data.rows.find(cur => eventsIds && eventsIds.includes(cur.event) && cur.has_error === 0);
+      const lastSuccess = data.rows.find(cur => (!eventsIds || eventsIds.includes(cur.event)) && cur.has_error === 0);
       setLastSuccessDate(lastSuccess ? new Date(lastSuccess.time_start * 1000 + lastSuccess.elapsed) : null);
 
       // Get last failed date
-      const lastFailed = data.rows.find(cur => eventsIds && eventsIds.includes(cur.event) && cur.has_error > 0);
+      const lastFailed = data.rows.find(cur => (!eventsIds || eventsIds.includes(cur.event)) && cur.has_error > 0);
       setLastFailedDate(lastFailed ? new Date(lastFailed.time_start * 1000 + lastFailed.elapsed) : null);
     }
   }, [data, eventsIds]);
