@@ -1,5 +1,32 @@
+This is a fork of [gethomepage/homepage](https://github.com/gethomepage/homepage)
+
 # Added features
-- Widget for Cronicle
+
+- Widget for [Cronicle](https://github.com/jhuckaby/Cronicle)
+
+# Installation
+
+The docker compose file has some modifications as the docker image must be built.
+
+1. `git clone git@github.com:paulchaum/homepage.git paulchaum-gethomepage`
+2. `cd paulchaum-gethomepage`
+3. `mkdir config/`
+4. `nano docker-compose.yml`
+5. Paste this in the `docker-compose.yml`:
+    ```yaml
+    services:
+      homepage:
+        build: .
+        container_name: homepage
+        environment:
+          PUID: 1000 # optional, your user id
+          PGID: 1000 # optional, your group id
+        volumes:
+          - ./config:/app/config # Make sure your local config directory exists
+          - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+        restart: unless-stopped
+    ```
+
 ---
 <p align="center">
   <picture>
