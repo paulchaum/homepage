@@ -5,7 +5,7 @@ description: SilverBullet Widget Configuration
 
 Learn more about [SilverBullet](https://github.com/silverbulletmd/silverbullet).
 
-The Cronicle widget retrieves the number of pages, date of last modification, total content size and number of attachments.
+The SilverBullet widget retrieves the number of pages, date of last modification, total content size and number of attachments.
 
 Allowed fields: `["pages", "last_modified", "size", "attachments"]`.
 
