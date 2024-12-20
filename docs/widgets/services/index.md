@@ -23,6 +23,7 @@ You can also find a list of all available service widgets in the sidebar navigat
 - [Channels DVR Server](channelsdvrserver.md)
 - [Cloudflared](cloudflared.md)
 - [Coin Market Cap](coin-market-cap.md)
+- [Cronicle](cronicle.md)
 - [CrowdSec](crowdsec.md)
 - [Custom API](customapi.md)
 - [Deluge](deluge.md)
