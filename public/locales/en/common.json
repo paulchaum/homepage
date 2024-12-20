@@ -1013,5 +1013,11 @@
       "failed": "Failed",
       "lastSuccess": "Last success",
       "lastFailed": "Last Failed"
+    },
+    "silverbullet": {
+      "pages": "Pages",
+      "last_modified": "Last Modified",
+      "size": "Size",
+      "attachments": "Attachments"
     }
 }

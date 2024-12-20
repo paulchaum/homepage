@@ -137,6 +137,7 @@ nav:
           - widgets/services/rutorrent.md
           - widgets/services/sabnzbd.md
           - widgets/services/scrutiny.md
+          - widgets/services/silverbullet.md
           - widgets/services/sonarr.md
           - widgets/services/speedtest-tracker.md
           - widgets/services/spoolman.md

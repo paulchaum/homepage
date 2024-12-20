@@ -114,6 +114,7 @@ You can also find a list of all available service widgets in the sidebar navigat
 - [ruTorrent](rutorrent.md)
 - [SABnzbd](sabnzbd.md)
 - [Scrutiny](scrutiny.md)
+- [SilverBullet](silverbullet.md)
 - [Sonarr](sonarr.md)
 - [Speedtest Tracker](speedtest-tracker.md)
 - [Stash](stash.md)
