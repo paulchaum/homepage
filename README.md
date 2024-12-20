@@ -2,7 +2,7 @@ This is a fork of [gethomepage/homepage](https://github.com/gethomepage/homepage
 
 # Added features
 
-- Widget for [Cronicle](https://github.com/jhuckaby/Cronicle)
+- Widget for [Cronicle](https://github.com/jhuckaby/Cronicle) ([doc](docs/widgets/services/cronicle.md))
 
 # Installation
 
