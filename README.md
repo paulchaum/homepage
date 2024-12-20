@@ -28,6 +28,11 @@ The docker compose file has some modifications as the docker image must be built
         restart: unless-stopped
     ```
 
+# Updated documentation
+
+The documentation is updated with the new widget. You can deep dive in [docs](docs),
+or you can build the doc by following the guide on [Documentation](#documentation).
+
 ---
 <p align="center">
   <picture>
