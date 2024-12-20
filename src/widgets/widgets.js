@@ -101,6 +101,7 @@ import readarr from "./readarr/widget";
 import rutorrent from "./rutorrent/widget";
 import sabnzbd from "./sabnzbd/widget";
 import scrutiny from "./scrutiny/widget";
+import silverbullet from "./silverbullet/widget";
 import sonarr from "./sonarr/widget";
 import speedtest from "./speedtest/widget";
 import spoolman from "./spoolman/widget";
@@ -238,6 +239,7 @@ const widgets = {
   rutorrent,
   sabnzbd,
   scrutiny,
+  silverbullet,
   sonarr,
   speedtest,
   spoolman,

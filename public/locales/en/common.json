@@ -1007,5 +1007,11 @@
         "issues": "Issues",
         "merges": "Merge Requests",
         "projects": "Projects"
+    },
+    "silverbullet": {
+      "pages": "Pages",
+      "last_modified": "Last Modified",
+      "size": "Size",
+      "attachments": "Attachments"
     }
 }
