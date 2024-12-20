@@ -3,6 +3,7 @@ This is a fork of [gethomepage/homepage](https://github.com/gethomepage/homepage
 # Added features
 
 - Widget for [Cronicle](https://github.com/jhuckaby/Cronicle) ([doc](docs/widgets/services/cronicle.md))
+- Widget for [SilverBullet](https://github.com/silverbulletmd/silverbullet) ([doc](docs/widgets/services/silverbullet.md))
 
 # Installation
 
