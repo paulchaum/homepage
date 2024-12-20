@@ -9,7 +9,7 @@ The SilverBullet widget retrieves the number of pages, date of last modification
 
 Allowed fields: `["pages", "last_modified", "size", "attachments"]`.
 
-Note: these pages are excluded, as they are part of the SilverBullet configuration:
+Note: these pages are excluded, except for total size, as they are part of the SilverBullet configuration:
 
 - page SETTINGS
 - pages in Library/
