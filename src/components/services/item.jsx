@@ -19,7 +19,6 @@ export default function Item({ service, groupName, useEqualHeights }) {
   const statusStyle = service.statusStyle !== undefined ? service.statusStyle : settings.statusStyle;
   const [statsOpen, setStatsOpen] = useState(service.showStats);
   const [statsClosing, setStatsClosing] = useState(false);
-
   // set stats to closed after 300ms
   const closeStats = () => {
     if (statsOpen) {
@@ -30,7 +29,6 @@ export default function Item({ service, groupName, useEqualHeights }) {
       }, 300);
     }
   };
-
   return (
     <li key={service.name} id={service.id} className="service" data-name={service.name || ""}>
       <div
@@ -57,7 +55,6 @@ export default function Item({ service, groupName, useEqualHeights }) {
                 <ResolvedIcon icon={service.icon} />
               </div>
             ))}
-
           {hasLink ? (
             <a
               href={service.href}
@@ -69,14 +66,18 @@ export default function Item({ service, groupName, useEqualHeights }) {
                 {service.name}
 
                 {/* eslint-disable react/no-danger */}
-                <p
-                  className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
-                  dangerouslySetInnerHTML={{__html: service.renderDescriptionHtml ? service.description : undefined}}
-                >
-                  {service.renderDescriptionHtml ? undefined : service.description}
-                </p>
-                {/* eslint-enable react/no-danger */}
-
+                {service.renderDescriptionHtml ? (
+                  <p
+                    className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
+                    dangerouslySetInnerHTML={{
+                      __html: service.renderDescriptionHtml ? service.description : undefined,
+                    }}
+                  />
+                ) : (
+                  <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
+                    {service.description}
+                  </p>
+                )}
               </div>
             </a>
           ) : (
@@ -84,15 +85,16 @@ export default function Item({ service, groupName, useEqualHeights }) {
               <div className="flex-1 px-2 py-2 text-sm text-left z-10 service-name">
                 {service.name}
 
-                {/* eslint-disable react/no-danger */}
-                <p
-                  className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
-                  dangerouslySetInnerHTML={{__html: service.renderDescriptionHtml ? service.description : undefined}}
-                >
-                  {service.renderDescriptionHtml ? undefined : service.description}
-                </p>
-                {/* eslint-enable react/no-danger */}
-
+                {service.renderDescriptionHtml ? (
+                  <p
+                    className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
+                    dangerouslySetInnerHTML={{ __html: service.renderDescriptionHtml ? service.description : undefined }}
+                  />
+                ) : (
+                  <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
+                    {service.description}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -108,14 +110,12 @@ export default function Item({ service, groupName, useEqualHeights }) {
                 <span className="sr-only">Ping status</span>
               </div>
             )}
-
             {service.siteMonitor && (
               <div className="flex-shrink-0 flex items-center justify-center service-tag service-site-monitor">
                 <SiteMonitor groupName={groupName} serviceName={service.name} style={statusStyle} />
                 <span className="sr-only">Site monitor status</span>
               </div>
             )}
-
             {service.container && (
               <button
                 type="button"
@@ -138,7 +138,6 @@ export default function Item({ service, groupName, useEqualHeights }) {
             )}
           </div>
         </div>
-
         {service.container && service.server && (
           <div
             className={classNames(
@@ -167,7 +166,6 @@ export default function Item({ service, groupName, useEqualHeights }) {
             )}
           </div>
         )}
-
         {service.widgets.map((widget) => (
           <Widget widget={widget} service={service} key={widget.index} />
         ))}
