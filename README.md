@@ -1,6 +1,6 @@
 This is a fork of [gethomepage/homepage](https://github.com/gethomepage/homepage)
 
-**DISCLAIMER**: you shouldn't clone my fork, it'll never replace the excellent work the [Homepage](https://github.com/gethomepage/homepage) team.
+**DISCLAIMER**: you shouldn't clone my fork, it'll never replace the excellent work of the [Homepage](https://github.com/gethomepage/homepage) team.
 My code may have vulnerabilities and some of the features may not be maintained.
 Use it as inspiration. You can copy my code without mentioning me.
 
