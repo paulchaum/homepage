@@ -67,18 +67,32 @@ export default function Item({ service, groupName, useEqualHeights }) {
             >
               <div className="flex-1 px-2 py-2 text-sm text-left z-10 service-name">
                 {service.name}
-                <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
-                  {service.description}
+
+                {/* eslint-disable react/no-danger */}
+                <p
+                  className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
+                  dangerouslySetInnerHTML={{__html: service.renderDescriptionHtml ? service.description : undefined}}
+                >
+                  {service.renderDescriptionHtml ? undefined : service.description}
                 </p>
+                {/* eslint-enable react/no-danger */}
+
               </div>
             </a>
           ) : (
             <div className="flex-1 flex items-center justify-between rounded-r-md service-title-text">
               <div className="flex-1 px-2 py-2 text-sm text-left z-10 service-name">
                 {service.name}
-                <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
-                  {service.description}
+
+                {/* eslint-disable react/no-danger */}
+                <p
+                  className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
+                  dangerouslySetInnerHTML={{__html: service.renderDescriptionHtml ? service.description : undefined}}
+                >
+                  {service.renderDescriptionHtml ? undefined : service.description}
                 </p>
+                {/* eslint-enable react/no-danger */}
+
               </div>
             </div>
           )}
