@@ -8,6 +8,7 @@ Use it as inspiration. You can copy my code without mentioning me.
 
 - Widget for [Cronicle](https://github.com/jhuckaby/Cronicle) ([doc](docs/widgets/services/cronicle.md))
 - Widget for [SilverBullet](https://github.com/silverbulletmd/silverbullet) ([doc](docs/widgets/services/silverbullet.md))
+- Enable HTML rendering in services description with `renderDescriptionHtml: true` ([doc](docs/configs/services.md#descriptions))
 
 # Installation
 
