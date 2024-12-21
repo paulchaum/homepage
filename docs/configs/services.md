@@ -132,6 +132,25 @@ Services may have descriptions,
 
 <img width="1038" alt="Service Descriptions" src="https://user-images.githubusercontent.com/82196/187040817-11a3d0eb-c997-4ef9-8f06-2d03a11332b6.png">
 
+Enable HTML rendering with the attribute `renderDescriptionHtml: true`:
+
+```yaml
+- Group A:
+    - Service A:
+        href: http://localhost/
+        description: "<a href='https://example.com'>This link is rendered</a>"
+        renderDescriptionHtml: true
+
+- Group B:
+    - Service B:
+        href: http://localhost/
+        description: "<a href='https://example.com'>This link is rendered</a>"
+        renderDescriptionHtml: false  # Optional, you set false or remove the attribute
+```
+
+**DISCLAMER**: Be aware of the risk of [XSS attacks](https://en.wikipedia.org/wiki/Cross-site_scripting),
+especially if you put javascript code or a call to an external API in the description.
+
 ## Icons
 
 Services may have an icon attached to them, you can use icons from [Dashboard Icons](https://github.com/walkxcode/dashboard-icons) automatically, by passing the name of the icon, with, or without `.png` or with `.svg` to use the svg version.
