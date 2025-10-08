@@ -65,20 +65,6 @@ export default function Item({ service, groupName, useEqualHeights }) {
             >
               <div className="flex-1 px-2 py-2 text-sm text-left z-10 service-name">
                 {service.name}
-
-                {/* eslint-disable react/no-danger */}
-                {service.renderDescriptionHtml ? (
-                  <p
-                    className="text-theme-500 dark:text-theme-300 text-xs font-light service-description"
-                    dangerouslySetInnerHTML={{
-                      __html: service.renderDescriptionHtml ? service.description : undefined,
-                    }}
-                  />
-                ) : (
-                  <p className="text-theme-500 dark:text-theme-300 text-xs font-light service-description">
-                    {service.description}
-                  </p>
-                )}
               </div>
             </a>
           ) : (
