@@ -1,7 +1,7 @@
+import Block from "components/services/widget/block";
+import Container from "components/services/widget/container";
 import { useTranslation } from "next-i18next";
 
-import Container from "components/services/widget/container";
-import Block from "components/services/widget/block";
 import useWidgetAPI from "utils/proxy/use-widget-api";
 
 function toKilowatts(t, value) {
@@ -29,15 +29,23 @@ export default function Component({ service }) {
     );
   }
 
+  // evcc v0.207 changed the API structure so its no longer under 'result'
+  const data = stateData.result ?? stateData;
+
+  // broken by evcc v0.133.0 https://github.com/evcc-io/evcc/commit/9dcb1fa0a7c08dd926b79309aa1f676a5fc6c8aa
+  const gridPower = data.gridPower ?? data.grid?.power ?? 0;
+
+  // Sum chargePower of all loadpoints
+  const totalChargePower = Array.isArray(data.loadpoints)
+    ? data.loadpoints.reduce((sum, lp) => sum + (lp.chargePower ?? 0), 0)
+    : 0;
+
   return (
     <Container service={service}>
-      <Block label="evcc.pv_power" value={`${toKilowatts(t, stateData.result.pvPower)} ${t("evcc.kilowatt")}`} />
-      <Block label="evcc.grid_power" value={`${toKilowatts(t, stateData.result.gridPower)} ${t("evcc.kilowatt")}`} />
-      <Block label="evcc.home_power" value={`${toKilowatts(t, stateData.result.homePower)} ${t("evcc.kilowatt")}`} />
-      <Block
-        label="evcc.charge_power"
-        value={`${toKilowatts(t, stateData.result.loadpoints[0].chargePower)} ${t("evcc.kilowatt")}`}
-      />
+      <Block label="evcc.pv_power" value={`${toKilowatts(t, data.pvPower)} ${t("evcc.kilowatt")}`} />
+      <Block label="evcc.grid_power" value={`${toKilowatts(t, gridPower)} ${t("evcc.kilowatt")}`} />
+      <Block label="evcc.home_power" value={`${toKilowatts(t, data.homePower)} ${t("evcc.kilowatt")}`} />
+      <Block label="evcc.charge_power" value={`${toKilowatts(t, totalChargePower)} ${t("evcc.kilowatt")}`} />
     </Container>
   );
 }

@@ -1,7 +1,7 @@
 import { GameDig } from "gamedig";
 
-import createLogger from "utils/logger";
 import getServiceWidget from "utils/config/service-helpers";
+import createLogger from "utils/logger";
 
 const proxyName = "gamedigProxyHandler";
 const logger = createLogger(proxyName);
@@ -12,19 +12,25 @@ export default async function gamedigProxyHandler(req, res) {
   const url = new URL(serviceWidget.url);
 
   try {
-    const serverData = await GameDig.query({
+    const gamedigOptions = {
       type: serviceWidget.serverType,
       host: url.hostname,
       port: url.port,
       givenPortOnly: true,
       checkOldIDs: true,
-    });
+    };
+
+    if (serviceWidget.gameToken) {
+      gamedigOptions.token = serviceWidget.gameToken;
+    }
+
+    const serverData = await GameDig.query(gamedigOptions);
 
     res.status(200).send({
       online: true,
       name: serverData.name,
       map: serverData.map,
-      players: serverData.players.length,
+      players: serverData.numplayers ?? serverData.players?.length,
       maxplayers: serverData.maxplayers,
       bots: serverData.bots.length,
       ping: serverData.ping,

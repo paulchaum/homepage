@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useMemo } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 
 const getInitialTheme = () => {
   if (typeof window !== "undefined" && window.localStorage) {
@@ -22,7 +22,7 @@ export function ThemeProvider({ initialTheme, children }) {
   const [theme, setTheme] = useState(getInitialTheme);
 
   const rawSetTheme = (rawTheme) => {
-    const root = window.document.getElementById("page_wrapper");
+    const root = window.document.documentElement;
     const isDark = rawTheme === "dark";
 
     root.classList.remove(isDark ? "light" : "dark");

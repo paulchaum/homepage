@@ -1,15 +1,15 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import yaml from "js-yaml";
 import Docker from "dockerode";
-import { CustomObjectsApi, NetworkingV1Api, ApiextensionsV1Api } from "@kubernetes/client-node";
+import yaml from "js-yaml";
 
-import createLogger from "utils/logger";
 import checkAndCopyConfig, { CONF_DIR, getSettings, substituteEnvironmentVars } from "utils/config/config";
 import getDockerArguments from "utils/config/docker";
-import getKubeConfig from "utils/config/kubernetes";
+import { getKubeConfig } from "utils/config/kubernetes";
 import * as shvl from "utils/config/shvl";
+import kubernetes from "utils/kubernetes/export";
+import createLogger from "utils/logger";
 
 const logger = createLogger("service-helpers");
 
@@ -167,36 +167,7 @@ export async function servicesFromDocker() {
   return mappedServiceGroups;
 }
 
-function getUrlFromIngress(ingress) {
-  const urlHost = ingress.spec.rules[0].host;
-  const urlPath = ingress.spec.rules[0].http.paths[0].path;
-  const urlSchema = ingress.spec.tls ? "https" : "http";
-  return `${urlSchema}://${urlHost}${urlPath}`;
-}
-
-export async function checkCRD(kc, name) {
-  const apiExtensions = kc.makeApiClient(ApiextensionsV1Api);
-  const exist = await apiExtensions
-    .readCustomResourceDefinitionStatus(name)
-    .then(() => true)
-    .catch(async (error) => {
-      if (error.statusCode === 403) {
-        logger.error(
-          "Error checking if CRD %s exists. Make sure to add the following permission to your RBAC: %d %s %s",
-          name,
-          error.statusCode,
-          error.body.message,
-        );
-      }
-      return false;
-    });
-
-  return exist;
-}
-
 export async function servicesFromKubernetes() {
-  const ANNOTATION_BASE = "gethomepage.dev";
-  const ANNOTATION_WIDGET_BASE = `${ANNOTATION_BASE}/widget.`;
   const { instanceName } = getSettings();
 
   checkAndCopyConfig("kubernetes.yaml");
@@ -206,145 +177,46 @@ export async function servicesFromKubernetes() {
     if (!kc) {
       return [];
     }
-    const networking = kc.makeApiClient(NetworkingV1Api);
-    const crd = kc.makeApiClient(CustomObjectsApi);
 
-    const ingressList = await networking
-      .listIngressForAllNamespaces(null, null, null, null)
-      .then((response) => response.body)
-      .catch((error) => {
-        logger.error("Error getting ingresses: %d %s %s", error.statusCode, error.body, error.response);
-        logger.debug(error);
-        return null;
-      });
+    // resource lists
+    const [ingressList, traefikIngressList, httpRouteList] = await Promise.all([
+      kubernetes.listIngress(),
+      kubernetes.listTraefikIngress(),
+      kubernetes.listHttpRoute(),
+    ]);
 
-    const traefikContainoExists = await checkCRD(kc, "ingressroutes.traefik.containo.us");
-    const traefikExists = await checkCRD(kc, "ingressroutes.traefik.io");
+    const resources = [...ingressList, ...traefikIngressList, ...httpRouteList];
 
-    const traefikIngressListContaino = await crd
-      .listClusterCustomObject("traefik.containo.us", "v1alpha1", "ingressroutes")
-      .then((response) => response.body)
-      .catch(async (error) => {
-        if (traefikContainoExists) {
-          logger.error(
-            "Error getting traefik ingresses from traefik.containo.us: %d %s %s",
-            error.statusCode,
-            error.body,
-            error.response,
-          );
-          logger.debug(error);
-        }
-
-        return [];
-      });
-
-    const traefikIngressListIo = await crd
-      .listClusterCustomObject("traefik.io", "v1alpha1", "ingressroutes")
-      .then((response) => response.body)
-      .catch(async (error) => {
-        if (traefikExists) {
-          logger.error(
-            "Error getting traefik ingresses from traefik.io: %d %s %s",
-            error.statusCode,
-            error.body,
-            error.response,
-          );
-          logger.debug(error);
-        }
-
-        return [];
-      });
-
-    const traefikIngressList = [...(traefikIngressListContaino?.items ?? []), ...(traefikIngressListIo?.items ?? [])];
-
-    if (traefikIngressList.length > 0) {
-      const traefikServices = traefikIngressList.filter(
-        (ingress) => ingress.metadata.annotations && ingress.metadata.annotations[`${ANNOTATION_BASE}/href`],
-      );
-      ingressList.items.push(...traefikServices);
-    }
-
-    if (!ingressList) {
+    if (!resources) {
       return [];
     }
-    const services = ingressList.items
-      .filter(
-        (ingress) =>
-          ingress.metadata.annotations &&
-          ingress.metadata.annotations[`${ANNOTATION_BASE}/enabled`] === "true" &&
-          (!ingress.metadata.annotations[`${ANNOTATION_BASE}/instance`] ||
-            ingress.metadata.annotations[`${ANNOTATION_BASE}/instance`] === instanceName ||
-            `${ANNOTATION_BASE}/instance.${instanceName}` in ingress.metadata.annotations),
-      )
-      .map((ingress) => {
-        let constructedService = {
-          app: ingress.metadata.annotations[`${ANNOTATION_BASE}/app`] || ingress.metadata.name,
-          namespace: ingress.metadata.namespace,
-          href: ingress.metadata.annotations[`${ANNOTATION_BASE}/href`] || getUrlFromIngress(ingress),
-          name: ingress.metadata.annotations[`${ANNOTATION_BASE}/name`] || ingress.metadata.name,
-          group: ingress.metadata.annotations[`${ANNOTATION_BASE}/group`] || "Kubernetes",
-          weight: ingress.metadata.annotations[`${ANNOTATION_BASE}/weight`] || "0",
-          icon: ingress.metadata.annotations[`${ANNOTATION_BASE}/icon`] || "",
-          description: ingress.metadata.annotations[`${ANNOTATION_BASE}/description`] || "",
-          external: false,
-          type: "service",
-        };
-        if (ingress.metadata.annotations[`${ANNOTATION_BASE}/external`]) {
-          constructedService.external =
-            String(ingress.metadata.annotations[`${ANNOTATION_BASE}/external`]).toLowerCase() === "true";
-        }
-        if (ingress.metadata.annotations[`${ANNOTATION_BASE}/pod-selector`] !== undefined) {
-          constructedService.podSelector = ingress.metadata.annotations[`${ANNOTATION_BASE}/pod-selector`];
-        }
-        if (ingress.metadata.annotations[`${ANNOTATION_BASE}/ping`]) {
-          constructedService.ping = ingress.metadata.annotations[`${ANNOTATION_BASE}/ping`];
-        }
-        if (ingress.metadata.annotations[`${ANNOTATION_BASE}/siteMonitor`]) {
-          constructedService.siteMonitor = ingress.metadata.annotations[`${ANNOTATION_BASE}/siteMonitor`];
-        }
-        if (ingress.metadata.annotations[`${ANNOTATION_BASE}/statusStyle`]) {
-          constructedService.statusStyle = ingress.metadata.annotations[`${ANNOTATION_BASE}/statusStyle`];
-        }
-        Object.keys(ingress.metadata.annotations).forEach((annotation) => {
-          if (annotation.startsWith(ANNOTATION_WIDGET_BASE)) {
-            shvl.set(
-              constructedService,
-              annotation.replace(`${ANNOTATION_BASE}/`, ""),
-              ingress.metadata.annotations[annotation],
-            );
-          }
-        });
+    const services = await Promise.all(
+      resources
+        .filter((resource) => kubernetes.isDiscoverable(resource, instanceName))
+        .map(async (resource) => kubernetes.constructedServiceFromResource(resource)),
+    );
 
-        try {
-          constructedService = JSON.parse(substituteEnvironmentVars(JSON.stringify(constructedService)));
-        } catch (e) {
-          logger.error("Error attempting k8s environment variable substitution.");
-          logger.debug(e);
-        }
+    // map service groups
+    const mappedServiceGroups = services.reduce((groups, serverService) => {
+      let serverGroup = groups.find((group) => group.name === serverService.group);
 
-        return constructedService;
-      });
-
-    const mappedServiceGroups = [];
-
-    services.forEach((serverService) => {
-      let serverGroup = mappedServiceGroups.find((searchedGroup) => searchedGroup.name === serverService.group);
       if (!serverGroup) {
-        mappedServiceGroups.push({
+        serverGroup = {
           name: serverService.group,
           services: [],
-        });
-        serverGroup = mappedServiceGroups[mappedServiceGroups.length - 1];
+        };
+        groups.push(serverGroup);
       }
 
-      const { name: serviceName, group: serverServiceGroup, ...pushedService } = serverService;
-      const result = {
+      const { name: serviceName, group: _, ...pushedService } = serverService;
+
+      serverGroup.services.push({
         name: serviceName,
         ...pushedService,
-      };
+      });
 
-      serverGroup.services.push(result);
-    });
+      return groups;
+    }, []);
 
     return mappedServiceGroups;
   } catch (e) {
@@ -412,6 +284,7 @@ export function cleanServiceGroups(groups) {
 
           // deluge, qbittorrent
           enableLeechProgress,
+          enableLeechSize,
 
           // diskstation
           volume,
@@ -426,6 +299,7 @@ export function cleanServiceGroups(groups) {
           // emby, jellyfin
           enableBlocks,
           enableNowPlaying,
+          enableMediaControl,
 
           // emby, jellyfin, tautulli
           enableUser,
@@ -435,7 +309,10 @@ export function cleanServiceGroups(groups) {
           // frigate
           enableRecentEvents,
 
-          // beszel, glances, immich, mealie, pihole, pfsense
+          // gamedig
+          gameToken,
+
+          // authentik, beszel, glances, immich, komga, mealie, pihole, pfsense, speedtest
           version,
 
           // glances
@@ -462,6 +339,13 @@ export function cleanServiceGroups(groups) {
           referrerPolicy,
           src,
 
+          // jellystat
+          days,
+
+          // komodo
+          showSummary,
+          showStacks,
+
           // kopia
           snapshotHost,
           snapshotPath,
@@ -487,11 +371,17 @@ export function cleanServiceGroups(groups) {
           // opnsense, pfsense
           wan,
 
+          // portainer
+          kubernetes,
+
           // prometheusmetric
           metrics,
 
           // proxmox
           node,
+
+          // proxmoxbackupserver
+          datastore,
 
           // speedtest
           bitratePrecision,
@@ -510,17 +400,29 @@ export function cleanServiceGroups(groups) {
           // unifi
           site,
 
+          // unraid
+          pool1,
+          pool2,
+          pool3,
+          pool4,
+
           // vikunja
           enableTaskList,
 
           // wgeasy
           threshold,
 
+          // yourspotify
+          interval,
+
           // technitium
           range,
 
           // spoolman
           spoolIds,
+
+          // grafana
+          alerts,
         } = widgetData;
 
         let fieldsList = fields;
@@ -569,8 +471,18 @@ export function cleanServiceGroups(groups) {
         if (type === "unifi") {
           if (site) widget.site = site;
         }
+        if (type === "portainer") {
+          if (kubernetes) widget.kubernetes = !!JSON.parse(kubernetes);
+        }
         if (type === "proxmox") {
           if (node) widget.node = node;
+        }
+        if (type === "proxmoxbackupserver") {
+          if (datastore) widget.datastore = datastore;
+        }
+        if (type === "komodo") {
+          if (showSummary !== undefined) widget.showSummary = !!JSON.parse(showSummary);
+          if (showStacks !== undefined) widget.showStacks = !!JSON.parse(showStacks);
         }
         if (type === "kubernetes") {
           if (namespace) widget.namespace = namespace;
@@ -589,11 +501,13 @@ export function cleanServiceGroups(groups) {
         }
         if (["deluge", "qbittorrent"].includes(type)) {
           if (enableLeechProgress !== undefined) widget.enableLeechProgress = JSON.parse(enableLeechProgress);
+          if (enableLeechSize !== undefined) widget.enableLeechSize = JSON.parse(enableLeechSize);
         }
         if (["opnsense", "pfsense"].includes(type)) {
           if (wan) widget.wan = wan;
         }
         if (["emby", "jellyfin"].includes(type)) {
+          if (enableMediaControl !== undefined) widget.enableMediaControl = !!JSON.parse(enableMediaControl);
           if (enableBlocks !== undefined) widget.enableBlocks = JSON.parse(enableBlocks);
           if (enableNowPlaying !== undefined) widget.enableNowPlaying = JSON.parse(enableNowPlaying);
         }
@@ -613,11 +527,28 @@ export function cleanServiceGroups(groups) {
         if (["diskstation", "qnap"].includes(type)) {
           if (volume) widget.volume = volume;
         }
+        if (type === "gamedig") {
+          if (gameToken) widget.gameToken = gameToken;
+        }
         if (type === "kopia") {
           if (snapshotHost) widget.snapshotHost = snapshotHost;
           if (snapshotPath) widget.snapshotPath = snapshotPath;
         }
-        if (["beszel", "glances", "immich", "mealie", "pfsense", "pihole"].includes(type)) {
+        if (
+          [
+            "authentik",
+            "beszel",
+            "glances",
+            "immich",
+            "komga",
+            "mealie",
+            "pfsense",
+            "pihole",
+            "speedtest",
+            "wgeasy",
+            "grafana",
+          ].includes(type)
+        ) {
           if (version) widget.version = parseInt(version, 10);
         }
         if (type === "glances") {
@@ -692,6 +623,23 @@ export function cleanServiceGroups(groups) {
         if (type === "spoolman") {
           if (spoolIds !== undefined) widget.spoolIds = spoolIds;
         }
+        if (type === "jellystat") {
+          if (days !== undefined) widget.days = parseInt(days, 10);
+        }
+        if (type === "grafana") {
+          if (alerts) widget.alerts = alerts;
+        }
+        if (type === "unraid") {
+          if (pool1) widget.pool1 = pool1;
+          if (pool2) widget.pool2 = pool2;
+          if (pool3) widget.pool3 = pool3;
+          if (pool4) widget.pool4 = pool4;
+        }
+        if (type === "yourspotify") {
+          if (interval !== undefined) {
+            widget.interval = interval;
+          }
+        }
         return widget;
       });
       return cleanedService;
@@ -710,7 +658,7 @@ export function findGroupByName(groups, name) {
     } else if (group.groups) {
       const foundGroup = findGroupByName(group.groups, name);
       if (foundGroup) {
-        foundGroup.parent = group;
+        foundGroup.parent = group.name;
         return foundGroup;
       }
     }

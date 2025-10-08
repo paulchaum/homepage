@@ -1,10 +1,10 @@
 import { CoreV1Api, Metrics } from "@kubernetes/client-node";
 
-import getKubeConfig from "../../../utils/config/kubernetes";
-import { parseCpu, parseMemory } from "../../../utils/kubernetes/kubernetes-utils";
+import { getKubeConfig } from "../../../utils/config/kubernetes";
+import { parseCpu, parseMemory } from "../../../utils/kubernetes/utils";
 import createLogger from "../../../utils/logger";
 
-const logger = createLogger("kubernetes-widget");
+const logger = createLogger("widget");
 
 export default async function handler(req, res) {
   try {
@@ -17,14 +17,11 @@ export default async function handler(req, res) {
     const coreApi = kc.makeApiClient(CoreV1Api);
     const metricsApi = new Metrics(kc);
 
-    const nodes = await coreApi
-      .listNode()
-      .then((response) => response.body)
-      .catch((error) => {
-        logger.error("Error getting ingresses: %d %s %s", error.statusCode, error.body, error.response);
-        logger.debug(error);
-        return null;
-      });
+    const nodes = await coreApi.listNode().catch((error) => {
+      logger.error("Error getting nodes: %d %s %s", error.statusCode, error.body, error.response);
+      logger.debug(error);
+      return null;
+    });
     if (!nodes) {
       return res.status(500).send({
         error: "An error occurred while fetching nodes, check logs for more details.",
@@ -70,7 +67,7 @@ export default async function handler(req, res) {
         nodeMap[nodeMetric.metadata.name].memory.percent = (mem / nodeMap[nodeMetric.metadata.name].memory.total) * 100;
       });
     } catch (error) {
-      logger.error("Error getting metrics, ensure you have metrics-server installed: s", JSON.stringify(error));
+      logger.error("Error getting metrics, ensure you have metrics-server installed:", JSON.stringify(error));
       return res.status(500).send({
         error: "Error getting metrics, check logs for more details",
       });

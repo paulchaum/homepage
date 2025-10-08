@@ -1,16 +1,16 @@
-import useSWR from "swr";
-import { useState } from "react";
-import { WiCloudDown } from "react-icons/wi";
-import { MdLocationDisabled, MdLocationSearching } from "react-icons/md";
 import { useTranslation } from "next-i18next";
+import { useCallback, useEffect, useState } from "react";
+import { MdLocationDisabled, MdLocationSearching } from "react-icons/md";
+import { WiCloudDown } from "react-icons/wi";
+import useSWR from "swr";
 
-import Error from "../widget/error";
+import mapIcon from "../../../utils/weather/owm-condition-map";
 import Container from "../widget/container";
 import ContainerButton from "../widget/container_button";
+import Error from "../widget/error";
 import PrimaryText from "../widget/primary_text";
 import SecondaryText from "../widget/secondary_text";
 import WidgetIcon from "../widget/widget_icon";
-import mapIcon from "../../../utils/weather/owm-condition-map";
 
 function Widget({ options }) {
   const { t, i18n } = useTranslation();
@@ -59,7 +59,7 @@ export default function OpenWeatherMap({ options }) {
     setLocation({ latitude: options.latitude, longitude: options.longitude });
   }
 
-  const requestLocation = () => {
+  const requestLocation = useCallback(() => {
     setRequesting(true);
     if (typeof window !== "undefined") {
       navigator.geolocation.getCurrentPosition(
@@ -77,7 +77,17 @@ export default function OpenWeatherMap({ options }) {
         },
       );
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (!options.latitude && !options.longitude && typeof navigator !== "undefined") {
+      navigator.permissions?.query({ name: "geolocation" }).then((result) => {
+        if (result.state === "granted") {
+          requestLocation();
+        }
+      });
+    }
+  }, [options.latitude, options.longitude, requestLocation]);
 
   if (!location) {
     return (

@@ -1,7 +1,7 @@
+import Block from "components/services/widget/block";
+import Container from "components/services/widget/container";
 import { useTranslation } from "next-i18next";
 
-import Container from "components/services/widget/container";
-import Block from "components/services/widget/block";
 import useWidgetAPI from "utils/proxy/use-widget-api";
 
 export default function Component({ service }) {
@@ -10,8 +10,12 @@ export default function Component({ service }) {
   const { widget } = service;
 
   const { data: usersData, error: usersError } = useWidgetAPI(widget, "users");
-  const { data: loginsData, error: loginsError } = useWidgetAPI(widget, "login");
-  const { data: failedLoginsData, error: failedLoginsError } = useWidgetAPI(widget, "login_failed");
+
+  const loginsEndpoint = widget.version === 2 ? "loginv2" : "login";
+  const { data: loginsData, error: loginsError } = useWidgetAPI(widget, loginsEndpoint);
+
+  const failedLoginsEndpoint = widget.version === 2 ? "login_failedv2" : "login_failed";
+  const { data: failedLoginsData, error: failedLoginsError } = useWidgetAPI(widget, failedLoginsEndpoint);
 
   if (usersError || loginsError || failedLoginsError) {
     const finalError = usersError ?? loginsError ?? failedLoginsError;
@@ -28,15 +32,25 @@ export default function Component({ service }) {
     );
   }
 
-  const yesterday = new Date(Date.now()).setHours(-24);
-  const loginsLast24H = loginsData.reduce(
-    (total, current) => (current.x_cord >= yesterday ? total + current.y_cord : total),
-    0,
-  );
-  const failedLoginsLast24H = failedLoginsData.reduce(
-    (total, current) => (current.x_cord >= yesterday ? total + current.y_cord : total),
-    0,
-  );
+  let loginsLast24H;
+  let failedLoginsLast24H;
+  switch (widget.version) {
+    case 1:
+      const yesterday = new Date(Date.now()).setHours(-24);
+      loginsLast24H = loginsData.reduce(
+        (total, current) => (current.x_cord >= yesterday ? total + current.y_cord : total),
+        0,
+      );
+      failedLoginsLast24H = failedLoginsData.reduce(
+        (total, current) => (current.x_cord >= yesterday ? total + current.y_cord : total),
+        0,
+      );
+      break;
+    case 2:
+      loginsLast24H = loginsData[0]?.count || 0;
+      failedLoginsLast24H = failedLoginsData[0]?.count || 0;
+      break;
+  }
 
   return (
     <Container service={service}>

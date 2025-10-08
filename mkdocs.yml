@@ -25,18 +25,21 @@ nav:
       - configs/services.md
       - configs/kubernetes.md
       - configs/docker.md
+      - configs/proxmox.md
       - configs/custom-css-js.md
   - "Widgets":
       - widgets/index.md
       - "Service Widgets":
           - widgets/services/index.md
           - widgets/services/adguard-home.md
+          - widgets/services/apcups.md
           - widgets/services/argocd.md
           - widgets/services/atsumeru.md
           - widgets/services/audiobookshelf.md
           - widgets/services/authentik.md
           - widgets/services/autobrr.md
           - widgets/services/azuredevops.md
+          - widgets/services/backrest.md
           - widgets/services/bazarr.md
           - widgets/services/beszel.md
           - widgets/services/caddy.md
@@ -44,6 +47,7 @@ nav:
           - widgets/services/calibre-web.md
           - widgets/services/changedetectionio.md
           - widgets/services/channelsdvrserver.md
+          - widgets/services/checkmk.md
           - widgets/services/cloudflared.md
           - widgets/services/coin-market-cap.md
           - widgets/services/cronicle.md
@@ -56,7 +60,9 @@ nav:
           - widgets/services/emby.md
           - widgets/services/esphome.md
           - widgets/services/evcc.md
+          - widgets/services/filebrowser.md
           - widgets/services/fileflows.md
+          - widgets/services/firefly.md
           - widgets/services/flood.md
           - widgets/services/freshrss.md
           - widgets/services/frigate.md
@@ -73,6 +79,7 @@ nav:
           - widgets/services/hdhomerun.md
           - widgets/services/headscale.md
           - widgets/services/healthchecks.md
+          - widgets/services/karakeep.md
           - widgets/services/homeassistant.md
           - widgets/services/homebox.md
           - widgets/services/homebridge.md
@@ -82,8 +89,10 @@ nav:
           - widgets/services/jdownloader.md
           - widgets/services/jellyfin.md
           - widgets/services/jellyseerr.md
+          - widgets/services/jellystat.md
           - widgets/services/kavita.md
           - widgets/services/komga.md
+          - widgets/services/komodo.md
           - widgets/services/kopia.md
           - widgets/services/lidarr.md
           - widgets/services/linkwarden.md
@@ -138,6 +147,7 @@ nav:
           - widgets/services/rutorrent.md
           - widgets/services/sabnzbd.md
           - widgets/services/scrutiny.md
+          - widgets/services/slskd.md
           - widgets/services/silverbullet.md
           - widgets/services/sonarr.md
           - widgets/services/speedtest-tracker.md
@@ -153,18 +163,22 @@ nav:
           - widgets/services/tdarr.md
           - widgets/services/traefik.md
           - widgets/services/transmission.md
+          - widgets/services/trilium.md
           - widgets/services/truenas.md
           - widgets/services/tubearchivist.md
           - widgets/services/unifi-controller.md
           - widgets/services/unmanic.md
+          - widgets/services/unraid.md
           - widgets/services/uptime-kuma.md
           - widgets/services/uptimerobot.md
           - widgets/services/urbackup.md
           - widgets/services/vikunja.md
+          - widgets/services/wallos.md
           - widgets/services/watchtower.md
           - widgets/services/wgeasy.md
           - widgets/services/whatsupdocker.md
           - widgets/services/xteve.md
+          - widgets/services/yourspotify.md
           - widgets/services/zabbix.md
       - "Information Widgets":
           - widgets/info/index.md

@@ -1,11 +1,14 @@
-import Container from "components/services/widget/container";
 import Block from "components/services/widget/block";
+import Container from "components/services/widget/container";
+
 import useWidgetAPI from "utils/proxy/use-widget-api";
 
 export default function Component({ service }) {
   const { widget } = service;
 
-  const { data: infoData, error: infoError } = useWidgetAPI(widget, "client");
+  const endpoint = widget.version === 2 ? "clientv2" : "client";
+
+  const { data: infoData, error: infoError } = useWidgetAPI(widget, endpoint);
 
   if (!widget.fields) {
     widget.fields = ["connected", "enabled", "total"];

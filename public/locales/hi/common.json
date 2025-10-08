@@ -148,7 +148,9 @@
         "up": "Up",
         "received": "Received",
         "sent": "Sent",
-        "externalIPAddress": "Ext. IP"
+        "externalIPAddress": "Ext. IP",
+        "externalIPv6Address": "Ext. IPv6",
+        "externalIPv6Prefix": "Ext. IPv6-Prefix"
     },
     "caddy": {
         "upstreams": "Upstreams",
@@ -176,7 +178,7 @@
         "connectedAp": "Connected APs",
         "activeUser": "Active devices",
         "alerts": "Alerts",
-        "connectedGateway": "Connected gateways",
+        "connectedGateways": "Connected gateways",
         "connectedSwitches": "Connected switches"
     },
     "nzbget": {
@@ -273,7 +275,8 @@
     "jellyseerr": {
         "pending": "Pending",
         "approved": "Approved",
-        "available": "Available"
+        "available": "Available",
+        "issues": "Open Issues"
     },
     "overseerr": {
         "pending": "Pending",
@@ -357,6 +360,12 @@
         "services": "Services",
         "middleware": "Middleware"
     },
+    "trilium": {
+        "version": "Version",
+        "notesCount": "Notes",
+        "dbSize": "Database Size",
+        "unknown": "Unknown"
+    },
     "navidrome": {
         "nothing_streaming": "No Active Streams",
         "please_wait": "Please Wait"
@@ -439,7 +448,7 @@
         "free": "Free",
         "used": "Used",
         "days": "d",
-        "hours": "घं.",
+        "hours": "h",
         "crit": "Crit",
         "read": "Read",
         "write": "Write",
@@ -566,7 +575,8 @@
     "gluetun": {
         "public_ip": "Public IP",
         "region": "Region",
-        "country": "Country"
+        "country": "Country",
+        "port_forwarded": "Port Forwarded"
     },
     "hdhomerun": {
         "channels": "Channels",
@@ -701,6 +711,10 @@
         "processing": "Processing",
         "processed": "Processed",
         "time": "Time"
+    },
+    "firefly": {
+        "networth": "Net Worth",
+        "budget": "Budget"
     },
     "grafana": {
         "dashboards": "Dashboards",
@@ -850,7 +864,8 @@
         "physicalRelease": "Physical release",
         "digitalRelease": "Digital release",
         "noEventsToday": "No events for today!",
-        "noEventsFound": "No events found"
+        "noEventsFound": "No events found",
+        "errorWhenLoadingData": "Error when loading calendar data"
     },
     "romm": {
         "platforms": "Platforms",
@@ -879,7 +894,8 @@
     "gitea": {
         "notifications": "Notifications",
         "issues": "Issues",
-        "pulls": "Pull Requests"
+        "pulls": "Pull Requests",
+        "repositories": "Repositories"
     },
     "stash": {
         "scenes": "Scenes",
@@ -1010,5 +1026,93 @@
         "issues": "Issues",
         "merges": "Merge Requests",
         "projects": "Projects"
+    },
+    "apcups": {
+        "status": "Status",
+        "load": "Load",
+        "bcharge": "Battery Charge",
+        "timeleft": "Time Left"
+    },
+    "karakeep": {
+        "bookmarks": "Bookmarks",
+        "favorites": "Favorites",
+        "archived": "Archived",
+        "highlights": "Highlights",
+        "lists": "Lists",
+        "tags": "Tags"
+    },
+    "slskd": {
+        "slskStatus": "Network",
+        "connected": "Connected",
+        "disconnected": "Disconnected",
+        "updateStatus": "Update",
+        "update_yes": "Available",
+        "update_no": "Up to Date",
+        "downloads": "Downloads",
+        "uploads": "Uploads",
+        "sharedFiles": "Files"
+    },
+    "jellystat": {
+        "songs": "Songs",
+        "movies": "Movies",
+        "episodes": "Episodes",
+        "other": "Other"
+    },
+    "checkmk": {
+        "serviceErrors": "Service issues",
+        "hostErrors": "Host issues"
+    },
+    "komodo": {
+        "total": "Total",
+        "running": "Running",
+        "stopped": "Stopped",
+        "down": "Down",
+        "unhealthy": "Unhealthy",
+        "unknown": "Unknown",
+        "servers": "Servers",
+        "stacks": "Stacks",
+        "containers": "Containers"
+    },
+    "filebrowser": {
+        "available": "Available",
+        "used": "Used",
+        "total": "Total"
+    },
+    "wallos": {
+        "activeSubscriptions": "Subscriptions",
+        "thisMonthlyCost": "This Month",
+        "nextMonthlyCost": "Next Month",
+        "previousMonthlyCost": "Prev. Month",
+        "nextRenewingSubscription": "Next Payment"
+    },
+    "unraid": {
+        "STARTED": "Started",
+        "STOPPED": "Stopped",
+        "NEW_ARRAY": "New Array",
+        "RECON_DISK": "Reconstructing Disk",
+        "DISABLE_DISK": "Disk Disabled",
+        "SWAP_DSBL": "Swap Disable",
+        "INVALID_EXPANSION": "Invalid Expansion",
+        "PARITY_NOT_BIGGEST": "Parity Not Biggest",
+        "TOO_MANY_MISSING_DISKS": "Too Many Missing Disks",
+        "NEW_DISK_TOO_SMALL": "New Disk Too Small",
+        "NO_DATA_DISKS": "No Data Disks",
+        "notifications": "Notifications",
+        "status": "Status",
+        "cpu": "CPU",
+        "memoryUsed": "Memory Used",
+        "memoryAvailable": "Memory Available",
+        "arrayUsed": "Array Used",
+        "arrayFree": "Array Free",
+        "poolUsed": "{{pool}} Used",
+        "poolFree": "{{pool}} Free"
+    },
+    "backrest": {
+        "num_plans": "Plans",
+        "num_success_30": "Successes",
+        "num_failure_30": "Failures",
+        "num_success_latest": "Succeeding",
+        "num_failure_latest": "Failing",
+        "bytes_added_30": "Bytes Added"
     }
 }

@@ -8,6 +8,7 @@ The Kubernetes connectivity has the following requirements:
 - Kubernetes 1.19+
 - Metrics Service
 - An Ingress controller
+  - Optionally: Gateway-API
 
 The Kubernetes connection is configured in the `kubernetes.yaml` file. There are 3 modes to choose from:
 
@@ -17,6 +18,22 @@ The Kubernetes connection is configured in the `kubernetes.yaml` file. There are
 
 ```yaml
 mode: default
+```
+
+To configure Kubernetes gateway-api, ingress or ingressRoute service discovery, add one or multiple of the following settings.
+
+Example settings:
+
+```yaml
+ingress: true # default, enable ingress only
+```
+
+or
+
+```yaml
+ingress: true # default, enable ingress
+traefik: true # enable traefik ingressRoute
+gateway: true # enable gateway-api
 ```
 
 ## Services
@@ -142,6 +159,51 @@ spec:
 
 If the `href` attribute is not present, Homepage will ignore the specific IngressRoute.
 
+### Gateway API HttpRoute support
+
+Homepage also features automatic service discovery for Gateway API. Service definitions are read by annotating the HttpRoute custom resource definition and are indentical to the Ingress example as defined in [Automatic Service Discovery](#automatic-service-discovery).
+
+To enable Gateway API HttpRoute update `kubernetes.yaml` to include:
+
+```
+gateway: true # enable gateway-api
+```
+
+#### Using the unoffocial helm chart?
+
+If you are using the unofficial helm chart ensure that the `ClusterRole` has required permissions for `gateway.networking.k8s.io`.
+
+See [ClusterRole and ClusterRoleBinding](../installation/k8s.md#clusterrole-and-clusterrolebinding)
+
 ## Caveats
 
 Similarly to Docker service discovery, there currently is no rigid ordering to discovered services and discovered services will be displayed above those specified in the `services.yaml`.
+
+## Adding extra configuration files
+
+Some Homepage features (for example, [Proxmox](../configs/proxmox.md)) require additional configuration files such as `proxmox.yaml`.
+When running Homepage on Kubernetes, these files must be provided via a `ConfigMap` and mounted into the container at `/app/config`.
+
+### ConfigMap example
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage
+data:
+  proxmox.yaml: |
+    pve:
+      url: https://proxmox.host.or.ip:8006
+      token: username@pam!Token ID
+      secret: secret
+```
+
+Mount the file into `/app/config` by updating the `Deployment`:
+
+```yaml
+volumeMounts:
+  - mountPath: /app/config/proxmox.yaml
+    name: homepage-config
+    subPath: proxmox.yaml
+```

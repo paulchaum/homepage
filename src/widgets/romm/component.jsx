@@ -1,7 +1,7 @@
+import Block from "components/services/widget/block";
+import Container from "components/services/widget/container";
 import { useTranslation } from "next-i18next";
 
-import Container from "components/services/widget/container";
-import Block from "components/services/widget/block";
 import useWidgetAPI from "utils/proxy/use-widget-api";
 
 const ROMM_DEFAULT_FIELDS = ["platforms", "totalRoms", "saves", "states"];
@@ -43,7 +43,10 @@ export default function Component({ service }) {
         <Block label="romm.saves" value={t("common.number", { value: response.SAVES })} />
         <Block label="romm.states" value={t("common.number", { value: response.STATES })} />
         <Block label="romm.screenshots" value={t("common.number", { value: response.SCREENSHOTS })} />
-        <Block label="romm.totalfilesize" value={t("common.bytes", { value: response.FILESIZE })} />
+        <Block
+          label="romm.totalfilesize"
+          value={t("common.bytes", { value: response.FILESIZE ?? response.TOTAL_FILESIZE_BYTES })}
+        />
       </Container>
     );
   }

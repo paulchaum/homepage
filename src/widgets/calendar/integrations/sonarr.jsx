@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
 import { useEffect } from "react";
 
-import useWidgetAPI from "../../../utils/proxy/use-widget-api";
 import Error from "../../../components/services/widget/error";
+import useWidgetAPI from "../../../utils/proxy/use-widget-api";
 
 export default function Integration({ config, params, setEvents, hideErrors = false }) {
   const { data: sonarrData, error: sonarrError } = useWidgetAPI(config, "calendar", {
@@ -29,6 +29,7 @@ export default function Integration({ config, params, setEvents, hideErrors = fa
         color: config?.color ?? "teal",
         isCompleted: event.hasFile,
         additional: `S${event.seasonNumber} E${event.episodeNumber}`,
+        url: config?.baseUrl && event.series.titleSlug && `${config.baseUrl}/series/${event.series.titleSlug}`,
       };
     });
 
