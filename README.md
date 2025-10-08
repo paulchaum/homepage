@@ -10,6 +10,59 @@ Use it as inspiration. You can copy my code without mentioning me.
 - Widget for [SilverBullet](https://github.com/silverbulletmd/silverbullet) ([doc](docs/widgets/services/silverbullet.md))
 - Enable HTML rendering in services description with `renderDescriptionHtml: true` ([doc](docs/configs/services.md#descriptions))
 
+# Build the image to Github container registry
+
+Follow these steps to build an the docker image to Github container registry, for a Raspberry Pi 4.
+
+1. Enable builder:
+   ```shell
+   docker buildx create --name rpi4-builder --use`
+   ```
+2. Install QEMU to emulate arm64:
+   ```shell
+   docker run --privileged --rm tonistiigi/binfmt --install all`
+   ```
+3. Check the builder:
+   ```shell
+   docker buildx inspect --bootstrap
+   ```
+   You should see "Platforms: [...] linux/arm64 [...]"
+4. Create a Github PAT (classic) with the following scopes: `write:packages`, `read:packages`, and `delete:packages` and copy the token to somewhere safe (you won't see it again)
+5. Login to Github container registry:
+   ```shell
+   export CR_PAT=<YOUR_COPIED_TOKEN>
+   echo $CR_PAT | docker login ghcr.io -u <YOUR_USERNAME> --password-stdin
+   ```
+6. Build and push the image:
+   ```shell
+   docker buildx build --no-cache --platform linux/arm64 -t ghcr.io/<YOUR_USERNAME>/<YOUR_REPO_NAME>:latest --push .
+   ```
+7. In the server (Raspberry Pi 4), connect to Github container registry:
+   ```shell
+   export CR_PAT=<YOUR_COPIED_TOKEN>
+   echo $CR_PAT | docker login ghcr.io -u <YOUR_USERNAME> --password-stdin
+   ```
+8. Use this docker compose file:
+   ```yaml
+   services:
+     homepage:
+       image: ghcr.io/<YOUR_USERNAME>/<YOUR_REPO_NAME>:latest
+       container_name: homepage
+       environment:
+         PUID: 1000 # optional, your user id
+         PGID: 1000 # optional, your group id
+         # HOMEPAGE_ALLOWED_HOSTS: homepage.example.com  # (Optional) add this if you want to access the homepage from a different host
+       volumes:
+         - ./config:/app/config # Make sure your local config directory exists
+         - /var/run/docker.sock:/var/run/docker.sock:ro # optional, for docker integrations
+       restart: always
+   ```
+9. Start the container:
+   ```shell
+   docker compose up -d
+   ```
+
+
 # Installation
 
 The docker compose file has some modifications as the docker image must be built.
