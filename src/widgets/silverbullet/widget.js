@@ -6,7 +6,7 @@ const widget = {
 
   mappings: {
     index: {
-      endpoint: "index.json",
+      endpoint: ".fs",
       headers: {
         "X-Sync-Mode": "true",
       },
