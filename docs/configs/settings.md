@@ -109,6 +109,20 @@ color: slate
 
 Supported colors are: `slate`, `gray`, `zinc`, `neutral`, `stone`, `amber`, `yellow`, `lime`, `green`, `emerald`, `teal`, `cyan`, `sky`, `blue`, `indigo`, `violet`, `purple`, `fuchsia`, `pink`, `rose`, `red`, `white`
 
+## Block Highlight Levels
+
+You can override the default Tailwind classes applied when a widget highlight rule resolves to the `good`, `warn`, or `danger` level.
+
+```yaml
+blockHighlights:
+  levels:
+    good: "bg-emerald-500/40 text-emerald-950 dark:bg-emerald-900/60 dark:text-emerald-400"
+    warn: "bg-amber-300/30 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200"
+    danger: "bg-rose-700/45 text-rose-200 dark:bg-rose-950/70 dark:text-rose-400"
+```
+
+Any unspecified level falls back to the built-in defaults.
+
 ## Layout
 
 You can configure service and bookmarks sections to be either "column" or "row" based layouts, like so:
@@ -382,7 +396,9 @@ Set your desired language using:
 language: fr
 ```
 
-Currently supported languages: ca, de, en, es, fr, he, hr, hu, it, nb-NO, nl, pt, ru, sv, vi, zh-CN, zh-Hant
+Currently supported languages: ca, de, en, es, fr, he, hr, hu, it, nb-NO, nl, pt, ru, sv, vi, zh-Hans (Simplified), zh-Hant (Traditional)
+
+`zh-CN` will still work and is automatically mapped to `zh-Hans` for backwards compatibility.
 
 You can also specify locales e.g. for the DateTime widget, e.g. en-AU, en-GB, etc.
 
@@ -486,9 +502,9 @@ logpath: /logfile/path
 
 By default, logs are sent both to `stdout` and to a file at the path specified. This can be changed by setting the `LOG_TARGETS` environment variable to one of `both` (default), `stdout` or `file`.
 
-## Show Docker Stats
+## Show Container Stats
 
-You can show all docker stats expanded in `settings.yaml`:
+You can show all docker or proxmox stats expanded in `settings.yaml`:
 
 ```yaml
 showStats: true
@@ -557,3 +573,18 @@ or per service widget (`services.yaml`) with:
 ```
 
 If either value is set to true, the error message will be hidden.
+
+## Disable Search Engine Indexing
+
+You can request that search engines not to index your Homepage instance by enabling the `disableIndexing` setting.
+
+```yaml
+disableIndexing: true
+```
+
+When enabled, this will:
+
+- Disallow all crawlers in `robots.txt`
+- Add `<meta name="robots" content="noindex, nofollow">` tags to prevent indexing
+
+By default this feature is disabled.

@@ -88,6 +88,7 @@ import openmediavault from "./openmediavault/widget";
 import openwrt from "./openwrt/widget";
 import opnsense from "./opnsense/widget";
 import overseerr from "./overseerr/widget";
+import pangolin from "./pangolin/widget";
 import paperlessngx from "./paperlessngx/widget";
 import peanut from "./peanut/widget";
 import pfsense from "./pfsense/widget";
@@ -240,6 +241,7 @@ const widgets = {
   openmediavault,
   openwrt,
   paperlessngx,
+  pangolin,
   peanut,
   pfsense,
   photoprism,

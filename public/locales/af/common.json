@@ -599,6 +599,15 @@
         "inbox": "Inmandjie",
         "total": "Totaal"
     },
+    "pangolin": {
+        "orgs": "Orgs",
+        "sites": "Sites",
+        "resources": "Bronne",
+        "targets": "Teikens",
+        "traffic": "Verkeer",
+        "in": "In",
+        "out": "Uit"
+    },
     "peanut": {
         "battery_charge": "Batterylading",
         "ups_load": "SVE-lading",
@@ -759,7 +768,8 @@
     "ghostfolio": {
         "gross_percent_today": "Vandag",
         "gross_percent_1y": "Een jaar",
-        "gross_percent_max": "Alle tyd"
+        "gross_percent_max": "Alle tyd",
+        "net_worth": "Net Worth"
     },
     "audiobookshelf": {
         "podcasts": "Podsendinge",
@@ -1093,7 +1103,7 @@
         "DISABLE_DISK": "Skyf Gedeaktiveer",
         "SWAP_DSBL": "Ruil Gedeaktiveer",
         "INVALID_EXPANSION": "Ongeldige Uitbreiding",
-        "PARITY_NOT_BIGGEST": "Pariteit nie die grootste nie",
+        "PARITY_NOT_BIGGEST": "Pariteit nie die Grootste nie",
         "TOO_MANY_MISSING_DISKS": "Te Veel Ontbrekende Skywe",
         "NEW_DISK_TOO_SMALL": "Nuwe Skyf te Klein",
         "NO_DATA_DISKS": "Geen Data Skywe",
@@ -1114,5 +1124,10 @@
         "num_success_latest": "Slaag",
         "num_failure_latest": "Mislukking",
         "bytes_added_30": "Grepe bygevoeg"
+    },
+    "yourspotify": {
+        "songs": "Liedjies",
+        "time": "Tyd",
+        "artists": "Kunstenaars"
     }
 }
